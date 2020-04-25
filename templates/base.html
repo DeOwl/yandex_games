@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/main_page.css')}}" />
+    <title>Яндекс игры 2.0</title>
+</head>
+<body>
+
+    <header>
+        <div class = "title">Яндекс Игры 2.0</div>
+        <ul class = "menu">
+        <li><a href = "#">Контакты</a></li>
+        <li><a href = "#">О нас</a></li>
+        <li><a href = "#">Услуги</a></li>
+        </ul>
+        {% if current_user.is_authenticated %}
+            <p class="login"><a href="/user">{{ current_user.username }}</a><br>
+                             <a href="/logout">выйти</a></p>
+        {% else %}
+            <p class="login"><a href="/login">войти</a><br>
+                             <a href="/register">зарегестрироваться</a></p>
+        {% endif %}
+    </header>
+    <h3>{{message}}</h3>
+    {% block body %}{% endblock %}
+</body>
+</html>
