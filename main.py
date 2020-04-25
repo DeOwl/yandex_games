@@ -49,7 +49,7 @@ def login():
         session = db_session.create_session()
         user = session.query(User).filter(User.email == form.email.data).first()
         if user and user.check_password(form.password.data):
-            login_user(user, remember=form.remember_me.data)
+            login_user(user)
             return redirect("/")
         return render_template('login.html',
                                message="Неправильный логин или пароль",
@@ -78,9 +78,10 @@ def register():
         user.set_password(form.password.data)
         session.add(user)
         session.commit()
+        login_user(user)
         return render_template('main_page.html', title='Регистрация', form=form,
                                message='Вы успешно зарегистрировались!', current_user=current_user)
-    return render_template('register.html', title='Регистрация', form=form, message="что-то не так", current_user=current_user)
+    return render_template('register.html', title='Регистрация', form=form, current_user=current_user)
 
 
 @app.route("/delete_all_users")
