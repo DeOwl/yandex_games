@@ -1,5 +1,6 @@
 from data import db_session
 from data.users import User
+from data.games import Game
 from flask import Flask, request, render_template, redirect
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, BooleanField, SubmitField, IntegerField
@@ -39,7 +40,9 @@ def load_user(user_id):
 
 @app.route('/')
 def main_page():
-    return render_template("main_page.html", current_user=current_user)
+    session = db_session.create_session()
+    games = session.query(Game)
+    return render_template("main_page.html", current_user=current_user, games=games)
 
 
 @app.route('/login', methods=['GET', 'POST'])

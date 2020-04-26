@@ -1,1 +1,9 @@
 {% extends "base.html" %}
+
+{% block body %}
+    <ul class="first" aria-label="Игры">
+    {% for game in games %}
+        <li><a href = "/games/{{game.id}}" style="text-decoration: none;color:inherit">{{ game.name  }}</a></li>
+    {% endfor %}
+    </ul>
+{% endblock %}
