@@ -86,6 +86,13 @@ def register():
                                message='Вы успешно зарегистрировались!', current_user=current_user)
     return render_template('register.html', title='Регистрация', form=form, current_user=current_user)
 
+@app.route('/games/<gameid>')
+def game(gameid):
+    session = db_session.create_session()
+    game = session.query(Game).filter(Game.id == gameid).first()
+    print(game.name)
+    return render_template('game_page.html', current_user=current_user, game=game)
+
 
 @app.route("/delete_all_users")
 def delete_all():

@@ -11,6 +11,7 @@ game.id = id
 game.name = input("название: ")
 game.cost = int(input("цена: "))
 game.description = input("описание: ")
+game.image = input("путь к изображению: ")
 session.add(game)
 session.commit()
 

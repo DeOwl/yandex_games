@@ -3,7 +3,11 @@
 {% block body %}
     <ul class="first" aria-label="Игры">
     {% for game in games %}
-        <li><a href = "/games/{{game.id}}" style="text-decoration: none;color:inherit">{{ game.name  }}</a></li>
+        <li onclick="location.href='/games/{{game.id}}';">
+		  <img src="{{game.image}}" height='75' style="vertical-align: middle;border: 3px solid black;float: left;margin-right: 5px">
+		  <p style="text-transform: capitalize">  {{ game.name  }}</p>
+		  <p>  {{ game.rating  }}</p>
+		</li>
     {% endfor %}
     </ul>
 {% endblock %}

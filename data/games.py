@@ -9,3 +9,4 @@ class Game(SqlAlchemyBase):
     description = sqlalchemy.Column(sqlalchemy.String, unique=True)
     cost = sqlalchemy.Column(sqlalchemy.Integer, unique=False)
     rating = sqlalchemy.Column(sqlalchemy.String, unique=True)
+    image = sqlalchemy.Column(sqlalchemy.String, unique=True)

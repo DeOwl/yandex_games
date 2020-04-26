@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block body %}
+<div>
+    <h2 style="text-transform: capitalize">{{game.name}}</h2>
+	<img src='{{game.image}}'>
+	<i>
+	  <br>
+	    <h1>{{game.cost}} р.<h1>
+	  </br>
+	</i>
+</div>
+{% endblock %}
