@@ -82,8 +82,7 @@ def register():
         session.add(user)
         session.commit()
         login_user(user)
-        return render_template('main_page.html', title='Регистрация', form=form,
-                               message='Вы успешно зарегистрировались!', current_user=current_user)
+        return redirect("/")
     return render_template('register.html', title='Регистрация', form=form, current_user=current_user)
 
 @app.route('/games/<gameid>')
