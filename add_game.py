@@ -10,6 +10,7 @@ while session.query(Game).get(id):
 game.id = id
 game.name = input("название: ")
 game.cost = int(input("цена: "))
+game.rating = str(input("возраст: "))
 game.description = input("описание: ")
 game.image = input("путь к изображению: ")
 session.add(game)

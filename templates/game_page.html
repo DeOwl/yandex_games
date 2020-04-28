@@ -1,13 +1,14 @@
 {% extends "base.html" %}
 
 {% block body %}
-<div>
-    <h2 style="text-transform: capitalize">{{game.name}}</h2>
-	<img src='{{game.image}}'>
-	<i>
-	  <br>
-		<h1>{{game.cost}} р.</h1>
-		<h1>{{game.description}}</h1>
-	</i>
+<div style='padding: 10px; background-color: #ffe88a; border-radius: 25px'>
+<h1 style="text-transform: capitalize">{{game.name}}</h1>
+<div style='display: table-cell'>
+	<img src='{{game.image}}' style='float: left'>
+	<p style='font-size: 28px; margin: 5px'>{{game.description}}</p>
+</div>
+<i>
+	  <br><h1>{{game.cost}} р.</h1>
+</i>
 </div>
 {% endblock %}
