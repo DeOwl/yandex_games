@@ -17,7 +17,7 @@ import os
 ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
 
 APP_ROOT = os.path.dirname(os.path.abspath(__file__))
-UPLOAD_FOLDER = os.path.join(APP_ROOT, 'static', 'img')
+UPLOAD_FOLDER = os.path.join(APP_ROOT, 'static', 'img', 'users')
 app = Flask(__name__)
 run_with_ngrok(app)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
@@ -137,7 +137,7 @@ def user_page():
         form.file.data.save(os.path.join(app.config['UPLOAD_FOLDER'], str(current_user.id) + "." + filename.split(".")[-1]))
         session = db_session.create_session()
         user = session.query(User).filter(User.id == current_user.id).first()
-        user.image = "/static/img/" + str(user.id) + "." + filename.split(".")[-1]
+        user.image = "/static/img/users/" + str(user.id) + "." + filename.split(".")[-1]
         session.commit()
     return render_template("user.html", user=current_user, form=form)
 
@@ -150,7 +150,7 @@ def change_photo():
             os.path.join(app.config['UPLOAD_FOLDER'], str(current_user.id) + "." + filename.split(".")[-1]))
         session = db_session.create_session()
         user = session.query(User).filter(User.id == current_user.id).first()
-        user.image = "/static/img/" + str(user.id) + "." + filename.split(".")[-1]
+        user.image = "/static/img/users/" + str(user.id) + "." + filename.split(".")[-1]
         session.commit()
         return redirect("/user")
     return render_template("user_change.html", user=current_user, form=form)
