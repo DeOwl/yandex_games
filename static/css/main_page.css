@@ -3,6 +3,7 @@ list-style: none;
 padding: 0;
 }
 .first li {
+overflow: auto;
 padding: 10px 10px;
 background: #ffe88a;
 border-bottom: 1px solid grey;

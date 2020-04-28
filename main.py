@@ -1,20 +1,36 @@
 from data import db_session
 from data.users import User
 from data.games import Game
-from flask import Flask, request, render_template, redirect
+from flask import Flask, request, render_template, redirect, url_for
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, BooleanField, SubmitField, IntegerField
+from flask_wtf.file import FileAllowed
+
+from wtforms import StringField, PasswordField, BooleanField, SubmitField, IntegerField, FileField
 from wtforms.validators import DataRequired
+
 from flask_ngrok import run_with_ngrok
 from flask_login import LoginManager, login_required, logout_user, login_user, current_user
+from werkzeug.utils import secure_filename
+import os
 
+
+ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
+
+APP_ROOT = os.path.dirname(os.path.abspath(__file__))
+UPLOAD_FOLDER = os.path.join(APP_ROOT, 'static', 'img')
 app = Flask(__name__)
 run_with_ngrok(app)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 db_session.global_init('db/db.sqlite')
 
 login_manager = LoginManager()
 login_manager.init_app(app)
+
+
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
 
 
 class LoginForm(FlaskForm):
@@ -30,6 +46,10 @@ class RegisterForm(FlaskForm):
     repeat_password = PasswordField('Repeat password', validators=[DataRequired()])
     username = StringField('username', validators=[DataRequired()])
     submit = SubmitField('Submit')
+
+
+class UploadForm(FlaskForm):
+    file = FileField()
 
 
 @login_manager.user_loader
@@ -108,10 +128,32 @@ def logout():
     return redirect('/')
 
 
-@app.route('/user')
+@app.route('/user', methods=["GET", 'POST'])
 @login_required
 def user_page():
-    return ""
+    form = UploadForm()
+    if form.validate_on_submit():
+        filename = secure_filename(form.file.data.filename)
+        form.file.data.save(os.path.join(app.config['UPLOAD_FOLDER'], str(current_user.id) + "." + filename.split(".")[-1]))
+        session = db_session.create_session()
+        user = session.query(User).filter(User.id == current_user.id).first()
+        user.image = "/static/img/" + str(user.id) + "." + filename.split(".")[-1]
+        session.commit()
+    return render_template("user.html", user=current_user, form=form)
+
+@app.route("/user/change_photo", methods=["GET", 'POST'])
+def change_photo():
+    form = UploadForm()
+    if form.validate_on_submit():
+        filename = secure_filename(form.file.data.filename)
+        form.file.data.save(
+            os.path.join(app.config['UPLOAD_FOLDER'], str(current_user.id) + "." + filename.split(".")[-1]))
+        session = db_session.create_session()
+        user = session.query(User).filter(User.id == current_user.id).first()
+        user.image = "/static/img/" + str(user.id) + "." + filename.split(".")[-1]
+        session.commit()
+        return redirect("/user")
+    return render_template("user_change.html", user=current_user, form=form)
 
 
 if __name__ == '__main__':

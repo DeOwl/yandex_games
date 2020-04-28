@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+
+{% block body %}
+<form method="post" enctype="multipart/form-data">
+    {{ form.hidden_tag() }}
+    {{ form.file }}
+
+    <input type="submit">
+</form>
+{% endblock %}

@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+
+
+{% block body %}
+
+<p>{{user.username}}</p>
+<img src="{{user.image}}" alt="Avatar" style="border-radius: 50%" width="250" height="250"><br>
+<input type="button" value="заменить" onclick="window.location='/user/change_photo';">
+{% endblock %}
