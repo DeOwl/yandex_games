@@ -1,5 +1,11 @@
 {% extends "base.html" %}
 
+{% block head %}
+    <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/main_page.css')}}" />
+
+{% endblock %}
+
+
 {% block body %}
     <ul class="first" aria-label="Игры">
     {% for game in games %}
