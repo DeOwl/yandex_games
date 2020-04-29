@@ -2,17 +2,27 @@
 
 {% block head %}
     <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/main_page.css')}}" />
-
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 {% endblock %}
 
 
 {% block body %}
     <ul class="first" aria-label="Игры">
     {% for game in games %}
+
         <li onclick="location.href='/games/{{game.id}}';">
-		  <img src="{{game.image}}" height='75' style="vertical-align: middle;border: 3px solid black;float: left;margin-right: 5px">
-		  <p style="text-transform: capitalize">  {{ game.name  }}</p>
-		  <p>  {{ game.rating  }}</p>
+            <div class="game-card">
+                <div class="game-card-inner">
+                <div class="game-card-front">
+                    <img src="{{game.image}}" height='75' style="vertical-align: middle;border: 3px solid black;float: left;margin-right: 5px">
+                    <p style="text-transform: capitalize">  {{ game.name  }}</p>
+                    <p>  {{ game.rating  }}</p>
+                </div>
+                <div class="game-card-back">
+                    <p>{{game.description}}</p>
+                </div>
+                </div>
+            </div>
 		</li>
     {% endfor %}
     </ul>

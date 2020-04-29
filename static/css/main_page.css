@@ -3,14 +3,8 @@ list-style: none;
 padding: 0;
 }
 .first li {
-overflow: auto;
-padding: 10px 10px;
-background: #ffe88a;
-border-bottom: 1px solid grey;
-color: #000000;
-font-size: 32px;
-box-shadow: 0 5px 5px 0 rgba(0,0,0, .2);
 margin-bottom: 5px;
+height:100px;
 }
 li p {
 	margin-top: 0px;
@@ -19,9 +13,47 @@ li p {
     padding: 0;
 }
 .first li:last-child {border-bottom: none;}
+
 .first:before{
     content:attr(aria-label);
     font-size:120%;
     font-weight:bold;
 }
 
+.game-card {
+  background-color: transparent;
+  width: 100%;
+  height: 100%;
+  perspective: 1000px; /* Remove this if you don't want the 3D effect */
+}
+.game-card-front, .game-card-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: #ffe88a;
+  backface-visibility: hidden;
+  background-color: #ffe88a;
+  color: black;
+}
+
+.game-card-front{
+font-size: 32px;
+}
+/* Style the back side */
+.game-card-back {
+  transform: rotateX(180deg);
+  font-size:28px;
+}
+
+.game-card:hover .game-card-inner {
+  transform: rotateX(180deg);
+}
+
+.game-card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.6s;
+  transform-style: preserve-3d;
+  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+}
