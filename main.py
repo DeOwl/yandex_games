@@ -2,6 +2,7 @@ from data import db_session
 from data.users import User
 from data.games import Game
 from flask import Flask, request, render_template, redirect, url_for
+from flask import session as server_session
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileAllowed
 
@@ -12,9 +13,8 @@ from flask_ngrok import run_with_ngrok
 from flask_login import LoginManager, login_required, logout_user, login_user, current_user
 from werkzeug.utils import secure_filename
 import os
+import datetime
 
-
-ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
 
 APP_ROOT = os.path.dirname(os.path.abspath(__file__))
 UPLOAD_FOLDER = os.path.join(APP_ROOT, 'static', 'img', 'users')
@@ -22,15 +22,10 @@ app = Flask(__name__)
 run_with_ngrok(app)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+app.config['PERMANENT_SESSION_LIFETIME'] = datetime.timedelta(days=365)
 db_session.global_init('db/db.sqlite')
-
 login_manager = LoginManager()
 login_manager.init_app(app)
-
-
-def allowed_file(filename):
-    return '.' in filename and \
-           filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
 
 
 class LoginForm(FlaskForm):
@@ -109,7 +104,6 @@ def register():
 def game(gameid):
     session = db_session.create_session()
     game = session.query(Game).filter(Game.id == gameid).first()
-    print(game.name)
     return render_template('game_page.html', current_user=current_user, game=game)
 
 
@@ -141,6 +135,7 @@ def user_page():
         session.commit()
     return render_template("user.html", user=current_user, form=form)
 
+
 @app.route("/user/change_photo", methods=["GET", 'POST'])
 def change_photo():
     form = UploadForm()
@@ -154,6 +149,34 @@ def change_photo():
         session.commit()
         return redirect("/user")
     return render_template("user_change.html", user=current_user, form=form)
+
+
+@app.route("/games/add_game/<id>")
+def add_game_to_session(id):
+    if "games" in server_session:
+        server_session["games"] += [id]
+    else:
+        server_session["games"] = [id]
+    return redirect("/games/" + str(id))
+
+
+@app.route("/cart")
+def cart():
+    if "games" not in server_session:
+        server_session["games"] = []
+    games = []
+    session = db_session.create_session()
+    amount = dict()
+
+    for game in server_session["games"]:
+        print(amount)
+        game_got = session.query(Game).filter(Game.id==game).first()
+        if game_got not in games:
+            games.append(game_got)
+            amount[game] = 1
+        else:
+            amount[game] += 1
+    return render_template("cart.html", games=games, amount=amount)
 
 
 if __name__ == '__main__':

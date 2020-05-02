@@ -1,0 +1,8 @@
+{% extends "base.html" %}
+
+
+{% block body %}
+    {% for game in games %}
+        <p>{{game.name}} {{amount[game.id|string]}}</p>
+    {% endfor %}
+{% endblock %}

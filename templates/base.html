@@ -6,6 +6,7 @@
     <meta http-equiv="Pragma" content="no-cache" />
     <meta http-equiv="Expires" content="0" />
     <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/base.css')}}" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <title>Яндекс игры 2.0</title>
     {% block head %}
     {% endblock %}
@@ -19,6 +20,7 @@
         <li><a href = "#">О нас</a></li>
         <li><a href = "#">Услуги</a></li>
         </ul>
+        <i class="fa fa-shopping-cart" onclick="location.href='/cart'" style="font-size:24px;position:absolute;top:33px;right:270px;"></i>
         {% if current_user.is_authenticated %}
             <p class="login"><a href="/user">{{ current_user.username }}</a><br>
                              <a href="/logout">выйти</a></p>
