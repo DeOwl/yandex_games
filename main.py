@@ -28,6 +28,7 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 
 
+
 class LoginForm(FlaskForm):
     email = StringField('Почта', validators=[DataRequired()])
     password = PasswordField('Пароль', validators=[DataRequired()])
@@ -55,6 +56,8 @@ def load_user(user_id):
 
 @app.route('/')
 def main_page():
+    if "message" in server_session:
+        server_session["message"] = ""
     session = db_session.create_session()
     games = session.query(Game)
     return render_template("main_page.html", current_user=current_user, games=games)
@@ -104,7 +107,11 @@ def register():
 def game(gameid):
     session = db_session.create_session()
     game = session.query(Game).filter(Game.id == gameid).first()
-    return render_template('game_page.html', current_user=current_user, game=game)
+    message = ""
+    if "message" in server_session:
+        message = server_session["message"]
+        server_session["message"] = ""
+    return render_template('game_page.html', current_user=current_user, game=game, message=message)
 
 
 @app.route("/delete_all_users")
@@ -151,13 +158,29 @@ def change_photo():
     return render_template("user_change.html", user=current_user, form=form)
 
 
-@app.route("/games/add_game/<id>")
-def add_game_to_session(id):
+@app.route("/games/add_game/<id>/<source>")
+def add_game_to_session(id, source):
+    server_session["message"] = "вы добавили игру в корзину"
     if "games" in server_session:
         server_session["games"] += [id]
     else:
         server_session["games"] = [id]
-    return redirect("/games/" + str(id))
+    if source == "game":
+        return redirect("/games/" + str(id))
+    elif source == "cart":
+        return redirect("/cart")
+
+@app.route("/games/remove_game/<id>/<source>")
+def remove_game_to_session(id, source):
+    server_session["message"] = "вы добавили игру в корзину"
+    if "games" in server_session:
+        server_session["games"].remove(id)
+    else:
+        server_session["games"] = [id]
+    if source == "game":
+        return redirect("/games/" + str(id))
+    elif source == "cart":
+        return redirect("/cart")
 
 
 @app.route("/cart")
@@ -167,16 +190,23 @@ def cart():
     games = []
     session = db_session.create_session()
     amount = dict()
+    price = dict()
+    total = 0
 
     for game in server_session["games"]:
-        print(amount)
+
         game_got = session.query(Game).filter(Game.id==game).first()
         if game_got not in games:
             games.append(game_got)
             amount[game] = 1
+            price[game] = game_got.cost
+            total += game_got.cost
         else:
             amount[game] += 1
-    return render_template("cart.html", games=games, amount=amount)
+            price[game] += game_got.cost
+            total += game_got.cost
+    print(price)
+    return render_template("cart.html", games=games, amount=amount, price=price, total=total)
 
 
 if __name__ == '__main__':

@@ -1,8 +1,15 @@
 {% extends "base.html" %}
 
 
+{% block head %}
+    <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/cart.css')}}" />
+{% endblock %}
+
 {% block body %}
     {% for game in games %}
-        <p>{{game.name}} {{amount[game.id|string]}}</p>
+        <p>{{game.name}}  {{amount[game.id|string]}}  {{price[game.id|string]}}руб.</p>
+        <a href="/games/add_game/{{game.id}}/cart" class="no_blue_href", style="font-size:25px">+  </a>
+        <a href="/games/remove_game/{{game.id}}/cart" class="no_blue_href", style="font-size:25px">-</a>
     {% endfor %}
+    <p>Итого: {{total}}</p>
 {% endblock %}
