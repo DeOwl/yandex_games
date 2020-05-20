@@ -2,9 +2,15 @@
 
 {% block body %}
 <form method="post" enctype="multipart/form-data">
-    {{ form.hidden_tag() }}
-    {{ form.file }}
-
+    <p>
+        {{ form.hidden_tag() }}
+        {{form.file.label}}<br>
+        {{ form.file }}<br>
+        {{form.adress.label}}<br>
+        {{form.adress}}<br>
+        {{form.phone.label}}<br>
+        {{form.phone}}<br>
+    </p>
     <input type="submit">
 </form>
 {% endblock %}

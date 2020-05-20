@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block body %}
+    <h1>Информация о Заказе</h1>
+    <form action="" method="post">
+        {{ form.hidden_tag() }}
+        <p>
+            {{ form.email.label }}<br>
+            {{ form.email(class="form-control") }}
+            {% for error in form.phone.errors %}
+                <div class="alert alert-danger" role="alert">
+                    {{ error }}
+                </div>
+            {% endfor %}
+        </p>
+        <p>
+            {{ form.phone.label }}<br>
+            {{ form.phone(class="form-control") }}
+            {% for error in form.phone.errors %}
+                <div class="alert alert-danger" role="alert">
+                    {{ error }}
+                </div>
+            {% endfor %}
+        </p>
+        <p>
+            {{ form.adress.label }}<br>
+            {{ form.adress(class="form-control") }}
+            {% for error in form.adress.errors %}
+                <div class="alert alert-danger" role="alert">
+                    {{ error }}
+                </div>
+            {% endfor %}
+        </p>
+        <p>{{ form.payment.label }}<br>
+
+        {% for subfield in form.payment %}
+                {{ subfield }}
+                {{ subfield.label }}
+            <br>
+        {% endfor %}
+        {% for error in form.payment.errors %}
+        <div class="alert alert-danger" role="alert">
+            {{ error }}
+        </div>
+
+        {% endfor %}
+        </p>
+        <p>{{ form.submit(type="submit", class="btn btn-primary") }}</p>
+        <div>{{ message }}</div>
+    </form>
+{% endblock %}

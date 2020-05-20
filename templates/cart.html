@@ -7,9 +7,15 @@
 
 {% block body %}
     {% for game in games %}
-        <p>{{game.name}}  {{amount[game.id|string]}}  {{price[game.id|string]}}руб.</p>
-        <a href="/games/add_game/{{game.id}}/cart" class="no_blue_href", style="font-size:25px">+  </a>
-        <a href="/games/remove_game/{{game.id}}/cart" class="no_blue_href", style="font-size:25px">-</a>
+        <div>
+            <img src="{{game.image}}" width='160' height="80" style="vertical-align: middle;border: 3px solid black;float: left;margin-right: 5px;-ms-interpolation-mode: bicubic;">
+            <p style="font-size:25px">{{game.name}}  {{amount[game.id|string]}}шт.  {{price[game.id|string]}}руб.</p>
+            <a href="/games/add_game/{{game.id}}/cart" class="no_blue_href" >+    </a>
+            <a href="/games/remove_game/{{game.id}}/cart" class="no_blue_href" >    -</a>
+        </div>
+        <br>
     {% endfor %}
-    <p>Итого: {{total}}</p>
+    <p>Итого: {{total}}руб.</p>
+    <br>
+    <input type="button" onclick="location.href='/checkout'" value="checkout" style="background: #FFCC00;font-size:25px;">
 {% endblock %}

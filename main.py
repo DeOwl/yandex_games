@@ -6,7 +6,7 @@ from flask import session as server_session
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileAllowed
 
-from wtforms import StringField, PasswordField, BooleanField, SubmitField, IntegerField, FileField
+from wtforms import StringField, PasswordField, BooleanField, SubmitField, IntegerField, FileField, RadioField
 from wtforms.validators import DataRequired
 
 from flask_ngrok import run_with_ngrok
@@ -37,16 +37,24 @@ class LoginForm(FlaskForm):
 
 
 class RegisterForm(FlaskForm):
-    email = StringField('Login / email', validators=[DataRequired()])
+    email = StringField('email', validators=[DataRequired()])
     password = PasswordField('Password', validators=[DataRequired()])
     repeat_password = PasswordField('Repeat password', validators=[DataRequired()])
     username = StringField('username', validators=[DataRequired()])
     submit = SubmitField('Submit')
 
+class CheckoutForm(FlaskForm):
+    email = StringField('email', validators=[DataRequired()])
+    phone = StringField("номер телефона(+7(123)123-12-12)", validators=[DataRequired()])
+    adress = StringField("адрес", validators=[DataRequired()])
+    payment = RadioField(label="способо оплаты", validators=[DataRequired()], choices=[("карта", "карта"), ("наличные", "наличные")])
+    submit = SubmitField("оформить заказ")
+
 
 class UploadForm(FlaskForm):
-    file = FileField()
-
+    file = FileField("фото профиля")
+    phone = StringField("номер телефона(+7(123)123-12-12)")
+    adress = StringField("адрес")
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -95,6 +103,8 @@ def register():
             email=form.email.data,
             username=form.username.data,
             hashed_password=form.password.data,
+            phone="",
+            adress=""
         )
         user.set_password(form.password.data)
         session.add(user)
@@ -132,19 +142,12 @@ def logout():
 @app.route('/user', methods=["GET", 'POST'])
 @login_required
 def user_page():
-    form = UploadForm()
-    if form.validate_on_submit():
-        filename = secure_filename(form.file.data.filename)
-        form.file.data.save(os.path.join(app.config['UPLOAD_FOLDER'], str(current_user.id) + "." + filename.split(".")[-1]))
-        session = db_session.create_session()
-        user = session.query(User).filter(User.id == current_user.id).first()
-        user.image = "/static/img/users/" + str(user.id) + "." + filename.split(".")[-1]
-        session.commit()
-    return render_template("user.html", user=current_user, form=form)
+
+    return render_template("user.html", user=current_user)
 
 
 @app.route("/user/change_photo", methods=["GET", 'POST'])
-def change_photo():
+def change_profile():
     form = UploadForm()
     if form.validate_on_submit():
         filename = secure_filename(form.file.data.filename)
@@ -153,6 +156,10 @@ def change_photo():
         session = db_session.create_session()
         user = session.query(User).filter(User.id == current_user.id).first()
         user.image = "/static/img/users/" + str(user.id) + "." + filename.split(".")[-1]
+        if form.adress.data:
+            user.adress = form.adress.data
+        if form.phone.data:
+            user.phone = form.phone.data
         session.commit()
         return redirect("/user")
     return render_template("user_change.html", user=current_user, form=form)
@@ -207,6 +214,23 @@ def cart():
             total += game_got.cost
     print(price)
     return render_template("cart.html", games=games, amount=amount, price=price, total=total)
+
+
+@app.route("/checkout", methods=["GET", 'POST'])
+def checkout():
+    form = CheckoutForm()
+
+    if current_user.is_authenticated:
+        session = db_session.create_session()
+        person = session.query(User).filter(current_user.id == current_user.id).first()
+        form.email.data = person.email
+        form.adress.data = person.adress
+        form.phone.data = person.phone
+    if form.validate_on_submit():
+        if "games" in server_session:
+            server_session["games"] = []
+        return redirect("/")
+    return render_template("checkout.html", user=current_user, form=form)
 
 
 if __name__ == '__main__':

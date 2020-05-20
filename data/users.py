@@ -13,7 +13,7 @@ class User(SqlAlchemyBase, UserMixin):
     hashed_password = sqlalchemy.Column(sqlalchemy.String, unique=False)
     image = sqlalchemy.Column(sqlalchemy.String, unique=False)
     adress = sqlalchemy.Column(sqlalchemy.String, unique=False)
-
+    phone = sqlalchemy.Column(sqlalchemy.String, unique=False)
 
     def set_password(self, password):
         self.hashed_password = generate_password_hash(password)
